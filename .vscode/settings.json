@@ -1,0 +1,11 @@
+{
+    "protoc": {
+        "path": "C:/Users/USER/go/bin/protoc",
+        "compile_on_save": false,
+        "options": [
+            "--proto_path=protos/v3",
+            "--proto_path=${workspaceRoot}/proto",
+            "--proto_path=${env.GOPATH}/src",
+        ]
+    }
+}

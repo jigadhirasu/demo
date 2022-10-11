@@ -1,0 +1,16 @@
+
+syntax = "proto3";
+
+package productservice;
+
+option go_package = "github.com/jigadhirasu/demo/internal/services/productservice";
+
+
+import "product.proto";
+
+service ProductService {
+    rpc Create(Product) returns (Product);
+    rpc List(Product) returns (ProductList);
+    rpc Get(Product) returns (Product);
+    rpc Subscribe(Product) returns (stream Product);
+}
