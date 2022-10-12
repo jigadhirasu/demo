@@ -1,7 +1,8 @@
 package main
 
 import (
-	"net/http"
+	"fmt"
+	"net"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jigadhirasu/demo/internal/product"
@@ -30,15 +31,11 @@ func main() {
 	productservice.RegisterProductServiceServer(gs, product.NewServer())
 	reflection.Register(gs)
 
-	router := gin.Default()
-	router.Use(cors)
-	router.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, "OK")
-	})
-	router.POST("/productservice.ProductService/Create", func(ctx *gin.Context) {
-		gs.ServeHTTP(ctx.Writer, ctx.Request)
-	})
+	lis, err := net.Listen("tcp", ":8080")
+	if err != nil {
+		panic(err)
+	}
 
-	go router.RunTLS(":8443", "server.crt", "server.key")
-	router.Run(":8080")
+	fmt.Println("grpc service listen at :8080")
+	gs.Serve(lis)
 }
