@@ -1,0 +1,14 @@
+
+syntax = "proto3";
+
+package xservice;
+
+option go_package = "github.com/jigadhirasu/demo/internal/services/xservice";
+
+import "product/product.proto";
+
+service XService {
+    rpc Create(productservice.Product) returns (productservice.Product);
+    rpc List(productservice.Product) returns (productservice.ProductList);
+    rpc Get(productservice.Product) returns (productservice.Product);
+}

@@ -1,0 +1,16 @@
+
+syntax = "proto3";
+
+package productservice;
+
+option go_package = "github.com/jigadhirasu/demo/internal/services/productservice";
+
+message ProductList {
+    repeated Product list = 1;
+}
+
+message Product {
+    string UUID = 1;
+    string Name = 2;
+    map<string, string> Label = 3;
+}
