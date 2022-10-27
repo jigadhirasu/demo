@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/jigadhirasu/demo/internal/services/productservice"
+	"github.com/jigadhirasu/demo/internal/services/xservice"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -23,6 +24,7 @@ type Server struct {
 	data  map[string]*productservice.Product
 
 	productservice.UnsafeProductServiceServer
+	xservice.UnimplementedXServiceServer
 }
 
 func (h *Server) Create(ctx context.Context, p *productservice.Product) (*productservice.Product, error) {

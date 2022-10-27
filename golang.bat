@@ -1,8 +1,8 @@
 ::golang
 protoc -I=protofile ^
  --go_out=C:\_workspace ^
- protofile/*.proto 
+ protofile/product/*.proto 
 
 protoc -I=protofile ^
  --go-grpc_out=C:\_workspace ^
- protofile/*.service
+ protofile/service/*.proto

@@ -1,13 +1,15 @@
 package main
 
 import (
-	"context"
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"testing"
 	"time"
 
 	"github.com/jigadhirasu/demo/internal/services/productservice"
-	"google.golang.org/grpc"
 )
 
 func TestGrpcClient(t *testing.T) {
@@ -16,37 +18,32 @@ func TestGrpcClient(t *testing.T) {
 
 	<-time.After(time.Second)
 
-	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
-	if err != nil {
-		panic(err)
+	for i := 0; i < 3; i++ {
+		p := productservice.Product{
+			UUID: fmt.Sprintf("PPPPPPPP-%d", time.Now().UnixNano()),
+			Name: "NNNNNNNN",
+		}
+
+		v, _ := json.Marshal(p)
+		resp, err := http.Post("http://localhost:8080/productservice.ProductService/Create", "application/json", bytes.NewBuffer(v))
+		if err == nil {
+			g, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println(string(g))
+		}
 	}
 
-	client := productservice.NewProductServiceClient(conn)
-	ctx := context.Background()
-
-	for i := 0; i < 3; i++ {
-		r, err := client.Create(ctx, &productservice.Product{UUID: fmt.Sprintf("AAA%d", i+1), Name: "AAA"})
+	p := productservice.Product{}
+	v, _ := json.Marshal(p)
+	resp2, err := http.Post("http://localhost:8080/productservice.ProductService/List", "application/json", bytes.NewBuffer(v))
+	if err == nil {
+		g, err := ioutil.ReadAll(resp2.Body)
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println(r)
-	}
-
-	pl, err := client.List(ctx, &productservice.Product{})
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(pl.List)
-
-	observable, err := client.Subscribe(ctx, &productservice.Product{})
-	if err != nil {
-		panic(err)
-	}
-
-	for i := 0; i < 6; i++ {
-		g := &productservice.Product{}
-		observable.RecvMsg(g)
-		fmt.Println(g)
+		fmt.Println(string(g))
 	}
 
 	<-time.After(time.Hour)
